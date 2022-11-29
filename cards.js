@@ -29,4 +29,3 @@ function shuffleArray(arr){
 
 buildDeck();
 shuffleArray(deck);
-console.log(deck, deck.length);
