@@ -68,21 +68,24 @@ function playGame(){
              *  If player chose hit, deal them 1 card face up
              *  Add the total of the player's hand and display that to player
              *  Check if player busts, if so they lose the hand and dealer gets +1 to score
-             *
+             *  continue to top of loop
              */
         }
         if (playerGameMenuInput === "2") {
             /** TODO:
-             *
-             *
+             *  If player chose stand, show the dealer face down card
+             *  Add dealer hand total, if the dealer total is 17 or higher the dealer must stand and the winner is decided
+             *  If the dealer hand is 16 or lower the dealer must hit until they reach 17 or higher
+             *  If the dealer hand is 17 with an ace counting as 11, the dealer must hit
+             *  Once the dealer is forced to stand, player and dealer hand totals are compared against each other
+             *  The winner is decided (or draw) and the score is updated
+             *  continue the loop
              */
         }
         if(playerGameMenuInput === "3") {
             let playerConfirmQuit = confirm("Are you sure you want to quit?");
             if(playerConfirmQuit) {
                 playingHand = false;
-            } else {
-                continue;
             }
         }
     }
