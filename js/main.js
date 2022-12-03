@@ -2,8 +2,9 @@
 import * as Cards from "./cards.js";
 
 let playingHand = false;
-let player = {hand: [], score: 0, turn: false};
-let dealer = {hand: [], score: 0, turn: false};
+let player = {hand: [], score: 0};
+let dealer = {hand: [], score: 0};
+let dealerTurn = false;
 let deck = Cards.deck;
 
 Cards.buildDeck();
@@ -33,6 +34,8 @@ function printScores(){
     console.log(`Player Score: ${player.score}\t\t\tDealer Score: ${dealer.score}`)
 }
 
+
+
 function displayMainMenu(){
     // console.clear();
     printScores();
@@ -53,11 +56,35 @@ function displayMainMenu(){
     } while (!playingHand);
 }
 
-function displayHand(target){
-    if (target === dealer){
+/**
+ * TODO:
+ * Create a function that displays the hands of the dealer and player
+ * Only the dealer's first card will be shown until it is the dealers turn
+ */
 
-    }    
-    return target.hand
+function displayHands(){
+    if (dealerTurn){
+        /**
+         * TODO:
+         * If it's the dealers turn, we must return all cards face up
+         */
+    }
+    let playerHandString = '';
+
+    for (const card of player.hand) {
+        playerHandString += `${card.rank.id} of ${card.suit}s, `
+    }
+    
+    return `Dealer's face card: ${dealer.hand[0].rank.id} of ${dealer.hand[0].suit}s\n \nYour hand: ${playerHandString}\n \nTotal: ${Cards.getHandTotal(player)}`
+}
+
+/**
+ * TODO:
+ * Deal a card to the dealer or player
+ */
+
+function deal(target){
+    target.hand.push(deck.pop());
 }
 
 function playGame(){
@@ -66,15 +93,15 @@ function playGame(){
         printScores();
         /** 
          * TODO:
-         *  deal 1 card to the player face up
-         *  deal 1 card to the dealer face down
-         *  1 card to player face up
-         *  1 to dealer face up
-         *  ---------
-         *  check for player blackjack
-         *  if player has blackjack then check for dealer blackjack otherwise player wins the hand
+         *  check for player or dealer blackjack
+         *  determine winner if either has blackjack
          */
-        let playerGameMenuInput = prompt('Choose to Hit, Stand, or Return to Main Menu\n1: Hit\n2: Stand\n3: Main Menu');
+        deal(player);
+        deal(dealer);
+        deal(player);
+        deal(dealer);
+
+        let playerGameMenuInput = prompt(`${displayHands()}\n \nChoose to Hit, Stand, or Return to Main Menu\n1: Hit\n2: Stand\n3: Main Menu`);
 
         if (playerGameMenuInput === "1") {
             /** 

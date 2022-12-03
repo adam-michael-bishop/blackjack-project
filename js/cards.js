@@ -37,13 +37,13 @@ export function getHandTotal(target){
     }
     /**
      * TODO:
-     * Add logic to set Ace value to 1 if the hand total exceeds 21 and the hand has an Ace in it that is arleady not counted as 1.
+     * Test logic below
      */
     while (handTotal > blackjack && target.hand.some(e => e.id === "ace" && e.value !== aceConditionalValue)){
         //find the index of an object that contains the property id === "ace" and has not already been set to 1
         let aceIndex = target.hand.findIndex(e => e.id === "ace" && e.value !== aceConditionalValue);
         target.hand[aceIndex].value = aceConditionalValue;
     }
-    
+
     return handTotal;
 }
