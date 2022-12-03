@@ -2,8 +2,8 @@
 import * as Cards from "./cards.js";
 
 let playingHand = false;
-let player = {hand: [], score: 0};
-let dealer = {hand: [], score: 0};
+let player = {hand: [], score: 0, turn: false};
+let dealer = {hand: [], score: 0, turn: false};
 let deck = Cards.deck;
 
 Cards.buildDeck();
@@ -53,6 +53,13 @@ function displayMainMenu(){
     } while (!playingHand);
 }
 
+function displayHand(target){
+    if (target === dealer){
+
+    }    
+    return target.hand
+}
+
 function playGame(){
     resetScores();
     while (playingHand) {
@@ -97,7 +104,6 @@ function playGame(){
             }
         }
     }
-    initGame();
 }
 
 initGame();
