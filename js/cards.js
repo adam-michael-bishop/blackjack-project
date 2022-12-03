@@ -5,10 +5,10 @@ const ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "k
 const suits = ["club", "spade", "heart", "diamond"];
 
 //define the deck as an array
-let deck = [];
+export let deck = [];
 
 //build the deck by iterating the assignSuit function for each element of the ranks array
-function buildDeck(){
+export function buildDeck(){
     ranks.forEach(assignSuit)
 }
 
@@ -19,13 +19,9 @@ function assignSuit(cardRank){
     }
 }
 
-function shuffleArray(arr){
+export function shuffle(arr){
     for (let i = arr.length - 1; i > 0; i--){
         let j = Math.floor(Math.random() * (i + 1));
-        console.log(i, j);
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
 }
-
-buildDeck();
-shuffleArray(deck);
