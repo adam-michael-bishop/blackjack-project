@@ -134,7 +134,7 @@ function playGame(){
     while (playingHand) {
         printScores();
         /** 
-         * TODO:
+         *  TODO:
          *  check for player or dealer blackjack
          *  determine winner if either has blackjack
          */
@@ -148,7 +148,7 @@ function playGame(){
 
         if (playerGameMenuInput === "1") {
             /** 
-             * TODO:
+             *  TODO:
              *  If player chose hit, deal them 1 card face up
              *  Add the total of the player's hand and display that to player
              *  Check if player busts, if so they lose the hand and dealer gets +1 to score
@@ -158,7 +158,7 @@ function playGame(){
         }
         if (playerGameMenuInput === "2") {
             /** 
-             * TODO:
+             *  TODO:
              *  If player chose stand, show the dealer face down card
              *  Add dealer hand total, if the dealer total is 17 or higher the dealer must stand and the winner is decided
              *  If the dealer hand is 16 or lower the dealer must hit until they reach 17 or higher
@@ -168,9 +168,9 @@ function playGame(){
              *  continue the loop
              */
         }
-        if(playerGameMenuInput === "3") {
+        if (playerGameMenuInput === "3") {
             let playerConfirmQuit = confirm("Are you sure you want to quit?");
-            if(playerConfirmQuit) {
+            if (playerConfirmQuit) {
                 playingHand = false;
             }
         }
