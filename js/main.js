@@ -88,10 +88,7 @@ function getHandTotal(target){
     for (const card of target.hand) {
         handTotal += card.rank.value;
     }
-    /**
-     * TODO:
-     * Test logic below
-     */
+
     while (handTotal > Cards.blackjack && target.hand.some(e => e.rank.id === "ace" && e.rank.value !== Cards.aceConditionalValue)){
         //find the index of an object that contains the property id === "ace" and has not already been set to 1
         let aceIndex = target.hand.findIndex(e => e.rank.id === "ace" && e.rank.value !== Cards.aceConditionalValue);
@@ -104,14 +101,21 @@ function getHandTotal(target){
 }
 
 function checkForBlackjack(){
+    /**
+     * TODO:
+     * need to check for dealer blackjack if they have a 10 or 11 face card.
+     */
     if (getHandTotal(player) === Cards.blackjack || getHandTotal(dealer) === Cards.blackjack){
+        if (getHandTotal(player) === Cards.blackjack){
+            alert("Player Blackjack!");
+        }
         determineHandWinner();
     }
 }
 
 function determineHandWinner(){
     if (getHandTotal(player) === getHandTotal(dealer)){
-        alert(`${printScores()}\n \nDraw\n \n${displayHandTotals()}`);
+        alert(`${printScores()}\n \nPush\n \n${displayHandTotals()}`);
     } else if (getHandTotal(player) > getHandTotal(dealer)){
         player.score++;
         alert(`${printScores()}\n \nYou Win!\n \n${displayHandTotals()}`);
