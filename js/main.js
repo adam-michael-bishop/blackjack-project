@@ -31,7 +31,7 @@ function resetHands(){
 }
 
 function printScores(){
-    console.log(`Player Score: ${player.score}\t\t\tDealer Score: ${dealer.score}`)
+    return `Player Score: ${player.score}\t\t\tDealer Score: ${dealer.score}`;
 }
 
 
@@ -75,13 +75,51 @@ function displayHands(){
         playerHandString += `${card.rank.id} of ${card.suit}s, `
     }
     
-    return `Dealer's face card: ${dealer.hand[0].rank.id} of ${dealer.hand[0].suit}s\n \nYour hand: ${playerHandString}\n \nTotal: ${Cards.getHandTotal(player)}`
+    return `Dealer's face card: ${dealer.hand[0].rank.id} of ${dealer.hand[0].suit}s\n \nYour hand: ${playerHandString}\n \nYour total: ${getHandTotal(player)}`
 }
 
-/**
- * TODO:
- * Deal a card to the dealer or player
- */
+function displayHandTotals(){
+    return `Your Hand Total: ${getHandTotal(player)}\t\t\tDealer's Hand Total: ${getHandTotal(dealer)}`;
+}
+
+function getHandTotal(target){
+    let handTotal = 0;
+
+    for (const card of target.hand) {
+        handTotal += card.rank.value;
+    }
+    /**
+     * TODO:
+     * Test logic below
+     */
+    while (handTotal > Cards.blackjack && target.hand.some(e => e.rank.id === "ace" && e.rank.value !== Cards.aceConditionalValue)){
+        //find the index of an object that contains the property id === "ace" and has not already been set to 1
+        let aceIndex = target.hand.findIndex(e => e.rank.id === "ace" && e.rank.value !== Cards.aceConditionalValue);
+        handTotal -= target.hand[aceIndex].rank.value;
+        handTotal += Cards.aceConditionalValue;
+        target.hand[aceIndex].rank.value = Cards.aceConditionalValue;
+    }
+
+    return handTotal;
+}
+
+function checkForBlackjack(){
+    if (getHandTotal(player) === Cards.blackjack || getHandTotal(dealer) === Cards.blackjack){
+        determineHandWinner();
+    }
+}
+
+function determineHandWinner(){
+    if (getHandTotal(player) === getHandTotal(dealer)){
+        alert(`${printScores()}\n \nDraw\n \n${displayHandTotals()}`);
+    } else if (getHandTotal(player) > getHandTotal(dealer)){
+        player.score++;
+        alert(`${printScores()}\n \nYou Win!\n \n${displayHandTotals()}`);
+    } else if (getHandTotal(player) < getHandTotal(dealer)){
+        dealer.score++;
+        alert(`${printScores()}\n \nYou Lose\n \n${displayHandTotals()}`);
+    }
+}
 
 function deal(target){
     target.hand.push(deck.pop());
@@ -100,8 +138,9 @@ function playGame(){
         deal(dealer);
         deal(player);
         deal(dealer);
+        checkForBlackjack();
 
-        let playerGameMenuInput = prompt(`${displayHands()}\n \nChoose to Hit, Stand, or Return to Main Menu\n1: Hit\n2: Stand\n3: Main Menu`);
+        let playerGameMenuInput = prompt(`${displayHands()}\n \nSelect 1: Hit | 2: Stand | 3: Main Menu`);
 
         if (playerGameMenuInput === "1") {
             /** 
@@ -111,6 +150,7 @@ function playGame(){
              *  Check if player busts, if so they lose the hand and dealer gets +1 to score
              *  continue to top of loop
              */
+            deal(player);
         }
         if (playerGameMenuInput === "2") {
             /** 
