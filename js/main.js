@@ -2,8 +2,8 @@
 import * as Cards from "./cards.js";
 
 let playingHand = false;
-let player = {hand: [], score: 0};
-let dealer = {hand: [], score: 0};
+const player = {hand: [], score: 0};
+const dealer = {hand: [], score: 0};
 let dealerTurn = false;
 let deck = Cards.deck;
 
