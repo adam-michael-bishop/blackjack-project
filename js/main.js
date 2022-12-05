@@ -56,26 +56,23 @@ function displayMainMenu(){
     } while (!playingHand);
 }
 
-/**
- * TODO:
- * Create a function that displays the hands of the dealer and player
- * Only the dealer's first card will be shown until it is the dealers turn
- */
-
 function displayHands(){
-    if (dealerTurn){
-        /**
-         * TODO:
-         * If it's the dealers turn, we must return all cards face up
-         */
-    }
     let playerHandString = '';
+    let dealerHandString = '';
+
+    if (dealerTurn){
+        for (const card of dealer.hand) {
+            dealerHandString += `${card.rank.id} of ${card.suit}s, `
+        }
+    } else {
+        dealerHandString = `${dealer.hand[0].rank.id} of ${dealer.hand[0].suit}s`
+    }
 
     for (const card of player.hand) {
         playerHandString += `${card.rank.id} of ${card.suit}s, `
     }
-    
-    return `Dealer's face card: ${dealer.hand[0].rank.id} of ${dealer.hand[0].suit}s\n \nYour hand: ${playerHandString}\n \nYour total: ${getHandTotal(player)}`
+    //Following line is kind of messy, consider refactoring to make it readable.
+    return `Dealer's hand: ${dealerHandString}\n${dealerTurn ? `Dealer Total: ${getHandTotal(dealer)}\n` : ''}\nYour hand: ${playerHandString}\nYour total: ${getHandTotal(player)}`
 }
 
 function displayHandTotals(){
@@ -101,10 +98,9 @@ function getHandTotal(target){
 }
 
 function checkForBlackjack(){
-    /**
-     * TODO:
-     * need to check for dealer blackjack if they have a 10 or 11 face card.
-     */
+    if (dealer.hand[0].rank.value >= 10){
+        alert(`${displayHands()}\n \nChecking for dealer Blackjack...`);
+    }
     if (getHandTotal(player) === Cards.blackjack || getHandTotal(dealer) === Cards.blackjack){
         if (getHandTotal(player) === Cards.blackjack){
             alert("Player Blackjack!");
@@ -114,19 +110,44 @@ function checkForBlackjack(){
 }
 
 function determineHandWinner(){
-    if (getHandTotal(player) === getHandTotal(dealer)){
+    if (getHandTotal(player) > Cards.blackjack){
+        dealer.score++;
+        alert(`${printScores()}\n \nYou Lose\n \n${displayHandTotals()}`);
+        returnHandsToDeck();
+        Cards.shuffle(deck);
+    } else if (getHandTotal(dealer) > Cards.blackjack){
+        player.score++;
+        alert(`${printScores()}\n \nYou Win!\n \n${displayHandTotals()}`);
+        returnHandsToDeck();
+        Cards.shuffle(deck);
+    } else if (getHandTotal(player) === getHandTotal(dealer)){
         alert(`${printScores()}\n \nPush\n \n${displayHandTotals()}`);
+        returnHandsToDeck();
+        Cards.shuffle(deck);
     } else if (getHandTotal(player) > getHandTotal(dealer)){
         player.score++;
         alert(`${printScores()}\n \nYou Win!\n \n${displayHandTotals()}`);
+        returnHandsToDeck();
+        Cards.shuffle(deck);
     } else if (getHandTotal(player) < getHandTotal(dealer)){
         dealer.score++;
         alert(`${printScores()}\n \nYou Lose\n \n${displayHandTotals()}`);
+        returnHandsToDeck();
+        Cards.shuffle(deck);
     }
 }
 
 function deal(target){
     target.hand.push(deck.pop());
+}
+
+function returnHandsToDeck(){
+    for (let i = 0; i < player.hand.length; i++) {
+        deck.push(player.hand.pop());
+    }
+    for (let i = 0; i < dealer.hand.length; i++) {
+        deck.push(dealer.hand.pop());
+    }
 }
 
 function playGame(){
@@ -138,6 +159,7 @@ function playGame(){
          *  check for player or dealer blackjack
          *  determine winner if either has blackjack
          */
+        dealerTurn = false;
         deal(player);
         deal(dealer);
         deal(player);
@@ -147,14 +169,16 @@ function playGame(){
         let playerGameMenuInput = prompt(`${displayHands()}\n \nSelect 1: Hit | 2: Stand | 3: Main Menu`);
 
         if (playerGameMenuInput === "1") {
-            /** 
-             *  TODO:
-             *  If player chose hit, deal them 1 card face up
-             *  Add the total of the player's hand and display that to player
-             *  Check if player busts, if so they lose the hand and dealer gets +1 to score
-             *  continue to top of loop
-             */
-            deal(player);
+            while (!dealerTurn){
+                deal(player);
+                if (getHandTotal(player) > Cards.blackjack){
+                    determineHandWinner();
+                }
+                playerGameMenuInput = prompt(`${displayHands()}\n \nSelect 1: Hit | 2: Stand | 3: Main Menu`);
+                if (playerGameMenuInput !== "1"){
+                    dealerTurn = true;
+                }
+            }
         }
         if (playerGameMenuInput === "2") {
             /** 
