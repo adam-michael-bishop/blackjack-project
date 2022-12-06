@@ -132,8 +132,10 @@ function determineHandWinner(){
 	}
 }
 
-function deal(target){
-	target.hand.push(deck.pop());
+function deal(target, cardsToDeal = 1){
+	for (let i = 0; i < cardsToDeal; i++) {
+		target.hand.push(deck.pop());
+	}
 }
 
 function returnHandsToDeck(){
@@ -151,19 +153,22 @@ function playGame(){
 		returnHandsToDeck();
 		Cards.shuffle(deck);
 		dealerTurn = false;
-		deal(player);
+		deal(player, 2);
 		// using this to test blackjack reset bug
 		// player.hand = [{rank: {id: "ace", value: 11}, suit: "club"}, {rank: {id: "jack", value: 10}, suit: "club"}]
-		deal(dealer);
-		deal(player);
-		deal(dealer);
+		deal(dealer, 2);
+		/**
+		 * TODO:
+		 * checkForBlackjack needs to reset the loop if there is winner or draw.
+		 */
 		checkForBlackjack();
-		if (player.getHandTotal() === Cards.blackjack || dealer.getHandTotal() === Cards.blackjack){
-			console.log("blackjack skip");
-			continue;
-		}
+		if(dealerTurn) {continue;}
 
 		let playerGameMenuInput = prompt(`${displayHands()}\n \nSelect 1: Hit | 2: Stand | 3: Main Menu`);
+
+		while (playerGameMenuInput !== "1" && playerGameMenuInput !== "2" && playerGameMenuInput !== "3"){
+			playerGameMenuInput = prompt(`${displayHands()}\n \nSelect 1: Hit | 2: Stand | 3: Main Menu`);
+		}
 
 		if (playerGameMenuInput === "1") {
 			while (!dealerTurn){
