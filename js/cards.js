@@ -5,6 +5,7 @@ const ranks = [{id: "2", value: 2}, {id: "3", value: 3}, {id: "4", value: 4}, {i
 const suits = ["club", "spade", "heart", "diamond"];
 export const blackjack = 21;
 export const aceConditionalValue = 1;
+export const aceDefaultValue = 11;
 
 //define the deck as an array
 export let deck = [];

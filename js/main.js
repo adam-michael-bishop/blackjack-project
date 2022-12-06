@@ -1,14 +1,10 @@
 "use strict";
 import * as Cards from "./cards.js";
 
-/**
- * TODO:
- * Add soft hand message
- */
-
+const player = {hand: [], score: 0, getHandTotal: getHandTotal, isHandSoft: isHandSoft};
+const dealer = {hand: [], score: 0, getHandTotal: getHandTotal, isHandSoft: isHandSoft};
+const dealerStandAt = 17;
 let playingHand = false;
-const player = {hand: [], score: 0, handTotal: getHandTotal()};
-const dealer = {hand: [], score: 0, handTotal: getHandTotal()};
 let dealerTurn = false;
 let deck = Cards.deck;
 
@@ -38,7 +34,8 @@ function displayMainMenu(){
 
 		if(playerMenuInput.trim() === "1" || playerMenuInput.trim().toLowerCase() === "start"){
 			playingHand = true;
-			initGame()
+			initGame();
+			return;
 		} else if(playerMenuInput.trim() === "2" || playerMenuInput.trim().toLowerCase() === "exit") {
 			let playerConfirmQuit = confirm("Are you sure you want to quit?");
 			if(playerConfirmQuit){
@@ -53,18 +50,26 @@ function displayHands(){
 	let dealerHandString = '';
 
 	if (dealerTurn){
-		for (const card of dealer.hand) {
-			dealerHandString += `${card.rank.id} of ${card.suit}s, `
-		}
+		dealer.hand.forEach(function (card, i) {
+			if(i === dealer.hand.length - 1){
+				dealerHandString += `${card.rank.id} of ${card.suit}s`;
+			} else {
+				dealerHandString += `${card.rank.id} of ${card.suit}s, `;
+			}
+		});
 	} else {
 		dealerHandString = `${dealer.hand[0].rank.id} of ${dealer.hand[0].suit}s`
 	}
 
-	for (const card of player.hand) {
-		playerHandString += `${card.rank.id} of ${card.suit}s, `
-	}
+	player.hand.forEach(function (card, i) {
+		if(i === player.hand.length - 1){
+			playerHandString += `${card.rank.id} of ${card.suit}s`;
+		} else {
+			playerHandString += `${card.rank.id} of ${card.suit}s, `;
+		}
+	});
 	//Following line is kind of messy, consider refactoring to make it readable.
-	return `${printScores()}\n \nDealer's hand: ${dealerHandString}\n${dealerTurn ? `Dealer Total: ${dealer.handTotal}\n` : ''}\nYour hand: ${playerHandString}\nYour total: ${player.handTotal}`
+	return `${printScores()}\n \nDealer's hand: ${dealerHandString}\n${dealerTurn ? `Dealer Total: ${dealer.getHandTotal()} ${dealer.isHandSoft()? '(Soft)' : ''}\n` : ''}\nYour hand: ${playerHandString}\nYour total: ${player.getHandTotal()} ${player.isHandSoft()? '(Soft)' : ''}`
 }
 
 function getHandTotal(){
@@ -85,12 +90,16 @@ function getHandTotal(){
 	return handTotal;
 }
 
+function isHandSoft(){
+	return this.hand.some(e => e.rank.id === "ace" && e.rank.value === Cards.aceDefaultValue);
+}
+
 function checkForBlackjack(){
 	if (dealer.hand[0].rank.value >= 10){
 		alert(`${displayHands()}\n \nChecking for dealer Blackjack...`);
 	}
-	if (player.handTotal === Cards.blackjack || dealer.handTotal === Cards.blackjack){
-		if (player.handTotal === Cards.blackjack){
+	if (player.getHandTotal() === Cards.blackjack || dealer.getHandTotal() === Cards.blackjack){
+		if (player.getHandTotal() === Cards.blackjack){
 			alert("Player Blackjack!");
 		}
 		determineHandWinner();
@@ -99,11 +108,11 @@ function checkForBlackjack(){
 
 function determineHandWinner(){
 	dealerTurn = true;
-	if (player.handTotal === dealer.handTotal){
+	if (player.getHandTotal() === dealer.getHandTotal()){
 		alert(`${displayHands()}\n \nPush`);
 		returnHandsToDeck();
 		Cards.shuffle(deck);
-	} else if ((player.handTotal > dealer.handTotal && player.handTotal <= Cards.blackjack) || dealer.handTotal > Cards.blackjack){
+	} else if ((player.getHandTotal() > dealer.getHandTotal() && player.getHandTotal() <= Cards.blackjack) || dealer.getHandTotal() > Cards.blackjack){
 		player.score++;
 		alert(`${displayHands()}\n \nYou Win!`);
 		returnHandsToDeck();
@@ -123,12 +132,29 @@ function deal(target, cardsToDeal = 1){
 }
 
 function returnHandsToDeck(){
-	for (let i = 0; i < player.hand.length; i++) {
-		deck.push(player.hand.pop());
+	console.log(player.hand.length)
+
+	if (player.hand.length === 0 && dealer.hand.length === 0){return;}
+	for (const card of player.hand) {
+		if (card.rank.id === "ace"){
+			card.rank.value = Cards.aceDefaultValue;
+		}
+
 	}
-	for (let i = 0; i < dealer.hand.length; i++) {
+	for (const card of dealer.hand) {
+		if (card.rank.id === "ace"){
+			card.rank.value = Cards.aceDefaultValue;
+		}
+
+	}
+	while (player.hand.length > 0){
+		deck.push(player.hand.pop());
+
+	}
+	while (dealer.hand.length > 0){
 		deck.push(dealer.hand.pop());
 	}
+
 }
 
 function playGame(){
@@ -138,8 +164,6 @@ function playGame(){
 		Cards.shuffle(deck);
 		dealerTurn = false;
 		deal(player, 2);
-		// using this to test blackjack reset bug
-		// player.hand = [{rank: {id: "ace", value: 11}, suit: "club"}, {rank: {id: "jack", value: 10}, suit: "club"}]
 		deal(dealer, 2);
 
 		checkForBlackjack();
@@ -147,14 +171,14 @@ function playGame(){
 
 		let playerGameMenuInput = prompt(`${displayHands()}\n \nSelect 1: Hit | 2: Stand | 3: Main Menu`);
 
-		while (playerGameMenuInput !== "1" && playerGameMenuInput !== "2" && playerGameMenuInput !== "3"){
+		while (playerGameMenuInput !== "1" && playerGameMenuInput !== "2" && playerGameMenuInput !== "3" && playerGameMenuInput !== null){
 			playerGameMenuInput = prompt(`${displayHands()}\n \nSelect 1: Hit | 2: Stand | 3: Main Menu`);
 		}
 
 		if (playerGameMenuInput === "1") {
 			while (!dealerTurn){
 				deal(player);
-				if (player.handTotal > Cards.blackjack){
+				if (player.getHandTotal() > Cards.blackjack){
 					determineHandWinner();
 					break;
 				}
@@ -169,17 +193,19 @@ function playGame(){
 		}
 		if (playerGameMenuInput === "2") {
 			dealerTurn = true;
-			while (dealer.handTotal < 17) {
+			while (dealer.getHandTotal() < dealerStandAt) {
 				alert(`${displayHands()}\n \nDealer Hits`);
 				deal(dealer);
 			}
 			determineHandWinner();
 			continue;
 		}
-		if (playerGameMenuInput === "3") {
-			let playerConfirmQuit = confirm("Are you sure you want to quit?");
+		if (playerGameMenuInput === "3" || playerGameMenuInput === null) {
+			let playerConfirmQuit = confirm("Are you sure you want to return to Main Menu?");
 			if (playerConfirmQuit) {
 				playingHand = false;
+				displayMainMenu();
+				return;
 			}
 		}
 	}
