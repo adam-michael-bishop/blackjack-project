@@ -107,18 +107,19 @@ function checkForBlackjack(){
 }
 
 function determineHandWinner(){
+	dealerTurn = true;
 	if (player.getHandTotal() === dealer.getHandTotal()){
-		alert(`${printScores()}\n \nPush\n \n${displayHandTotals()}`);
+		alert(`${displayHands()}\n \nPush`);
 		returnHandsToDeck();
 		Cards.shuffle(deck);
 	} else if ((player.getHandTotal() > dealer.getHandTotal() && player.getHandTotal() <= Cards.blackjack) || dealer.getHandTotal() > Cards.blackjack){
 		player.score++;
-		alert(`${printScores()}\n \nYou Win!\n \n${displayHandTotals()}`);
+		alert(`${displayHands()}\n \nYou Win!`);
 		returnHandsToDeck();
 		Cards.shuffle(deck);
 	} else {
 		dealer.score++;
-		alert(`${printScores()}\n \nYou Lose\n \n${displayHandTotals()}`);
+		alert(`${displayHands()}\n \nYou Lose`);
 		returnHandsToDeck();
 		Cards.shuffle(deck);
 	}
@@ -140,15 +141,20 @@ function returnHandsToDeck(){
 function playGame(){
 	resetScores();
 	while (playingHand) {
-		printScores();
 		returnHandsToDeck();
 		Cards.shuffle(deck);
 		dealerTurn = false;
 		deal(player);
+		// using this to test blackjack reset bug
+		// player.hand = [{rank: {id: "ace", value: 11}, suit: "club"}, {rank: {id: "jack", value: 10}, suit: "club"}]
 		deal(dealer);
 		deal(player);
 		deal(dealer);
 		checkForBlackjack();
+		if (player.getHandTotal() === Cards.blackjack || dealer.getHandTotal() === Cards.blackjack){
+			console.log("blackjack skip");
+			continue;
+		}
 
 		let playerGameMenuInput = prompt(`${displayHands()}\n \nSelect 1: Hit | 2: Stand | 3: Main Menu`);
 
