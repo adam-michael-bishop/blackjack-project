@@ -3,14 +3,12 @@ import * as Cards from "./cards.js";
 
 /**
  * TODO:
- * Pressing cancel on the hit menu breaks the game
- * Getting blackjack on the first hand breaks the game
  * Add soft hand message
  */
 
 let playingHand = false;
-const player = {hand: [], score: 0, getHandTotal: getHandTotal};
-const dealer = {hand: [], score: 0, getHandTotal: getHandTotal};
+const player = {hand: [], score: 0, handTotal: getHandTotal()};
+const dealer = {hand: [], score: 0, handTotal: getHandTotal()};
 let dealerTurn = false;
 let deck = Cards.deck;
 
@@ -18,8 +16,6 @@ Cards.buildDeck();
 Cards.shuffle(deck);
 
 function initGame(){
-	resetScores();
-	resetHands();
 	if(playingHand){
 		playGame();
 	} else {
@@ -32,23 +28,15 @@ function resetScores(){
 	dealer.score = 0;
 }
 
-function resetHands(){
-	player.hand = [];
-	player.score = [];
-}
-
 function printScores(){
 	return `Player Score: ${player.score} Dealer Score: ${dealer.score}`;
 }
 
-
-
 function displayMainMenu(){
 	do {
 		let playerMenuInput = prompt("Enter 1 or start to play Blackjack, enter 2 or exit to exit game...");
-		if(playerMenuInput === null){
-			continue;
-		} else if(playerMenuInput.trim() === "1" || playerMenuInput.trim().toLowerCase() === "start"){
+
+		if(playerMenuInput.trim() === "1" || playerMenuInput.trim().toLowerCase() === "start"){
 			playingHand = true;
 			initGame()
 		} else if(playerMenuInput.trim() === "2" || playerMenuInput.trim().toLowerCase() === "exit") {
@@ -76,11 +64,7 @@ function displayHands(){
 		playerHandString += `${card.rank.id} of ${card.suit}s, `
 	}
 	//Following line is kind of messy, consider refactoring to make it readable.
-	return `${printScores()}\n \nDealer's hand: ${dealerHandString}\n${dealerTurn ? `Dealer Total: ${dealer.getHandTotal()}\n` : ''}\nYour hand: ${playerHandString}\nYour total: ${player.getHandTotal()}`
-}
-
-function displayHandTotals(){
-	return `Your Hand Total: ${player.getHandTotal()} Dealer's Hand Total: ${dealer.getHandTotal()}`;
+	return `${printScores()}\n \nDealer's hand: ${dealerHandString}\n${dealerTurn ? `Dealer Total: ${dealer.handTotal}\n` : ''}\nYour hand: ${playerHandString}\nYour total: ${player.handTotal}`
 }
 
 function getHandTotal(){
@@ -105,8 +89,8 @@ function checkForBlackjack(){
 	if (dealer.hand[0].rank.value >= 10){
 		alert(`${displayHands()}\n \nChecking for dealer Blackjack...`);
 	}
-	if (player.getHandTotal() === Cards.blackjack || dealer.getHandTotal() === Cards.blackjack){
-		if (player.getHandTotal() === Cards.blackjack){
+	if (player.handTotal === Cards.blackjack || dealer.handTotal === Cards.blackjack){
+		if (player.handTotal === Cards.blackjack){
 			alert("Player Blackjack!");
 		}
 		determineHandWinner();
@@ -115,11 +99,11 @@ function checkForBlackjack(){
 
 function determineHandWinner(){
 	dealerTurn = true;
-	if (player.getHandTotal() === dealer.getHandTotal()){
+	if (player.handTotal === dealer.handTotal){
 		alert(`${displayHands()}\n \nPush`);
 		returnHandsToDeck();
 		Cards.shuffle(deck);
-	} else if ((player.getHandTotal() > dealer.getHandTotal() && player.getHandTotal() <= Cards.blackjack) || dealer.getHandTotal() > Cards.blackjack){
+	} else if ((player.handTotal > dealer.handTotal && player.handTotal <= Cards.blackjack) || dealer.handTotal > Cards.blackjack){
 		player.score++;
 		alert(`${displayHands()}\n \nYou Win!`);
 		returnHandsToDeck();
@@ -157,10 +141,7 @@ function playGame(){
 		// using this to test blackjack reset bug
 		// player.hand = [{rank: {id: "ace", value: 11}, suit: "club"}, {rank: {id: "jack", value: 10}, suit: "club"}]
 		deal(dealer, 2);
-		/**
-		 * TODO:
-		 * checkForBlackjack needs to reset the loop if there is winner or draw.
-		 */
+
 		checkForBlackjack();
 		if(dealerTurn) {continue;}
 
@@ -173,7 +154,7 @@ function playGame(){
 		if (playerGameMenuInput === "1") {
 			while (!dealerTurn){
 				deal(player);
-				if (player.getHandTotal() > Cards.blackjack){
+				if (player.handTotal > Cards.blackjack){
 					determineHandWinner();
 					break;
 				}
@@ -188,7 +169,7 @@ function playGame(){
 		}
 		if (playerGameMenuInput === "2") {
 			dealerTurn = true;
-			while (dealer.getHandTotal() < 17) {
+			while (dealer.handTotal < 17) {
 				alert(`${displayHands()}\n \nDealer Hits`);
 				deal(dealer);
 			}
