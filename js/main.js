@@ -1,6 +1,13 @@
 "use strict";
 import * as Cards from "./cards.js";
 
+/**
+ * TODO:
+ * Pressing cancel on the hit menu breaks the game
+ * Getting blackjack on the first hand breaks the game
+ * Add soft hand message
+ */
+
 let playingHand = false;
 const player = {hand: [], score: 0, getHandTotal: getHandTotal};
 const dealer = {hand: [], score: 0, getHandTotal: getHandTotal};
