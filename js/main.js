@@ -1,8 +1,18 @@
 "use strict";
 import * as Cards from "./cards.js";
 
-const player = {hand: [], score: 0, getHandTotal: getHandTotal, isHandSoft: isHandSoft};
-const dealer = {hand: [], score: 0, getHandTotal: getHandTotal, isHandSoft: isHandSoft};
+const player = {
+	hand: [],
+	score: 0,
+	getHandTotal: getHandTotal,
+	isHandSoft: isHandSoft
+};
+const dealer = {
+	hand: [],
+	score: 0,
+	getHandTotal: getHandTotal,
+	isHandSoft: isHandSoft
+};
 const dealerStandAt = 17;
 let playingHand = false;
 let dealerTurn = false;
@@ -50,8 +60,8 @@ function displayHands(){
 	let dealerHandString = '';
 
 	if (dealerTurn){
-		dealer.hand.forEach(function (card, i) {
-			if(i === dealer.hand.length - 1){
+		dealer.hand.forEach(function (card, index) {
+			if(index === dealer.hand.length - 1){
 				dealerHandString += `${card.rank.id} of ${card.suit}s`;
 			} else {
 				dealerHandString += `${card.rank.id} of ${card.suit}s, `;
@@ -61,8 +71,8 @@ function displayHands(){
 		dealerHandString = `${dealer.hand[0].rank.id} of ${dealer.hand[0].suit}s`
 	}
 
-	player.hand.forEach(function (card, i) {
-		if(i === player.hand.length - 1){
+	player.hand.forEach(function (card, index) {
+		if(index === player.hand.length - 1){
 			playerHandString += `${card.rank.id} of ${card.suit}s`;
 		} else {
 			playerHandString += `${card.rank.id} of ${card.suit}s, `;
