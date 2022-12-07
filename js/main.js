@@ -1,18 +1,61 @@
 "use strict";
 import * as Cards from "./cards.js";
 
+const handMethods = {
+	getHandTotal: function () {
+		let handTotal = 0;
+		for (const card of this.hand) {
+			handTotal += card.rank.value;
+		}
+		while (handTotal > Cards.blackjack && this.hand.some(e => e.rank.id === "ace" && e.rank.value !== Cards.aceConditionalValue)){
+			//find the index of an object that contains the property id === "ace" and has not already been set to 1
+			let aceIndex = this.hand.findIndex(e => e.rank.id === "ace" && e.rank.value !== Cards.aceConditionalValue);
+			handTotal -= this.hand[aceIndex].rank.value;
+			handTotal += Cards.aceConditionalValue;
+			this.hand[aceIndex].rank.value = Cards.aceConditionalValue;
+		}
+		return handTotal;
+	},
+	isHandSoft: function () {
+		return this.hand.some(e => e.rank.id === "ace" && e.rank.value === Cards.aceDefaultValue);
+	},
+	resetAceValue: function () {
+		for (const card of this.hand) {
+			if (card.rank.id === "ace") {
+				card.rank.value = Cards.aceDefaultValue;
+			}
+		}
+	},
+	getHandAsString: function () {
+		let handString = '';
+		this.hand.forEach(function (card, index, arr) {
+			if (index === arr.length - 1) {
+				handString += `${card.rank.id} of ${card.suit}s`;
+			} else {
+				handString += `${card.rank.id} of ${card.suit}s, `;
+			}
+		});
+		return handString;
+	},
+	returnHandToDeck: function (arr) {
+		while (this.hand.length > 0) {
+			arr.push(this.hand.pop());
+		}
+	}
+}
+
 const player = {
 	hand: [],
 	score: 0,
-	getHandTotal: getHandTotal,
-	isHandSoft: isHandSoft
+	__proto__: handMethods
 };
+
 const dealer = {
 	hand: [],
 	score: 0,
-	getHandTotal: getHandTotal,
-	isHandSoft: isHandSoft
+	__proto__: handMethods
 };
+
 const dealerStandAt = 17;
 let playingHand = false;
 let dealerTurn = false;
@@ -60,48 +103,13 @@ function displayHands(){
 	let dealerHandString = '';
 
 	if (dealerTurn){
-		dealer.hand.forEach(function (card, index) {
-			if(index === dealer.hand.length - 1){
-				dealerHandString += `${card.rank.id} of ${card.suit}s`;
-			} else {
-				dealerHandString += `${card.rank.id} of ${card.suit}s, `;
-			}
-		});
+		dealerHandString = dealer.getHandAsString();
 	} else {
 		dealerHandString = `${dealer.hand[0].rank.id} of ${dealer.hand[0].suit}s`
 	}
-
-	player.hand.forEach(function (card, index) {
-		if(index === player.hand.length - 1){
-			playerHandString += `${card.rank.id} of ${card.suit}s`;
-		} else {
-			playerHandString += `${card.rank.id} of ${card.suit}s, `;
-		}
-	});
+	playerHandString = player.getHandAsString();
 	//Following line is kind of messy, consider refactoring to make it readable.
 	return `${printScores()}\n \nDealer's hand: ${dealerHandString}\n${dealerTurn ? `Dealer Total: ${dealer.getHandTotal()} ${dealer.isHandSoft()? '(Soft)' : ''}\n` : ''}\nYour hand: ${playerHandString}\nYour total: ${player.getHandTotal()} ${player.isHandSoft()? '(Soft)' : ''}`
-}
-
-function getHandTotal(){
-	let handTotal = 0;
-
-	for (const card of this.hand) {
-		handTotal += card.rank.value;
-	}
-
-	while (handTotal > Cards.blackjack && this.hand.some(e => e.rank.id === "ace" && e.rank.value !== Cards.aceConditionalValue)){
-		//find the index of an object that contains the property id === "ace" and has not already been set to 1
-		let aceIndex = this.hand.findIndex(e => e.rank.id === "ace" && e.rank.value !== Cards.aceConditionalValue);
-		handTotal -= this.hand[aceIndex].rank.value;
-		handTotal += Cards.aceConditionalValue;
-		this.hand[aceIndex].rank.value = Cards.aceConditionalValue;
-	}
-
-	return handTotal;
-}
-
-function isHandSoft(){
-	return this.hand.some(e => e.rank.id === "ace" && e.rank.value === Cards.aceDefaultValue);
 }
 
 function checkForBlackjack(){
@@ -120,17 +128,17 @@ function determineHandWinner(){
 	dealerTurn = true;
 	if (player.getHandTotal() === dealer.getHandTotal()){
 		alert(`${displayHands()}\n \nPush`);
-		returnHandsToDeck();
+		resetHands();
 		Cards.shuffle(deck);
 	} else if ((player.getHandTotal() > dealer.getHandTotal() && player.getHandTotal() <= Cards.blackjack) || dealer.getHandTotal() > Cards.blackjack){
 		player.score++;
 		alert(`${displayHands()}\n \nYou Win!`);
-		returnHandsToDeck();
+		resetHands();
 		Cards.shuffle(deck);
 	} else {
 		dealer.score++;
 		alert(`${displayHands()}\n \nYou Lose`);
-		returnHandsToDeck();
+		resetHands();
 		Cards.shuffle(deck);
 	}
 }
@@ -141,36 +149,19 @@ function deal(target, cardsToDeal = 1){
 	}
 }
 
-function returnHandsToDeck(){
-	console.log(player.hand.length)
+function resetHands(){
+	if (player.hand.length === 0 && dealer.hand.length === 0) {return;}
 
-	if (player.hand.length === 0 && dealer.hand.length === 0){return;}
-	for (const card of player.hand) {
-		if (card.rank.id === "ace"){
-			card.rank.value = Cards.aceDefaultValue;
-		}
-
-	}
-	for (const card of dealer.hand) {
-		if (card.rank.id === "ace"){
-			card.rank.value = Cards.aceDefaultValue;
-		}
-
-	}
-	while (player.hand.length > 0){
-		deck.push(player.hand.pop());
-
-	}
-	while (dealer.hand.length > 0){
-		deck.push(dealer.hand.pop());
-	}
-
+	player.resetAceValue();
+	dealer.resetAceValue();
+	player.returnHandToDeck(deck);
+	dealer.returnHandToDeck(deck);
 }
 
 function playGame(){
 	resetScores();
 	while (playingHand) {
-		returnHandsToDeck();
+		resetHands();
 		Cards.shuffle(deck);
 		dealerTurn = false;
 		deal(player, 2);
