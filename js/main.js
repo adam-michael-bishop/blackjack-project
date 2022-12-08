@@ -53,6 +53,10 @@ const player = {
 const dealer = {
 	hand: [],
 	score: 0,
+	turn: false,
+	shouldStand: function () {
+
+	},
 	__proto__: handMethods
 };
 
