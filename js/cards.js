@@ -28,3 +28,9 @@ export function shuffle(arr){
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
 }
+
+function assignCardSprite() {
+    /**
+     * For each element of the deck array, add a css class that corresponds with the current card
+     */
+}

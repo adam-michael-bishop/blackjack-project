@@ -87,11 +87,11 @@ function displayMainMenu(){
 	do {
 		let playerMenuInput = prompt("Enter 1 or start to play Blackjack, enter 2 or exit to exit game...");
 
-		if(playerMenuInput.trim() === "1" || playerMenuInput.trim().toLowerCase() === "start"){
+		if(playerMenuInput === "1"){
 			playingHand = true;
 			initGame();
 			return;
-		} else if(playerMenuInput.trim() === "2" || playerMenuInput.trim().toLowerCase() === "exit") {
+		} else if(playerMenuInput === "2" || playerMenuInput === null) {
 			let playerConfirmQuit = confirm("Are you sure you want to quit?");
 			if(playerConfirmQuit){
 				break;
