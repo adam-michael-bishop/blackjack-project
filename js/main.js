@@ -214,4 +214,35 @@ function playGame(){
 	}
 }
 
-initGame();
+/**
+ * Testing out drawing a card and rendering on the screen
+ */
+
+deal(player, 1)
+const canvas = document.querySelector('canvas');
+const context = canvas.getContext('2d');
+const spriteSheetURL = '../blackjack/assets/sprites/8BitDeckAssets.png';
+let image = new Image();
+image.src = spriteSheetURL;
+
+let position = Cards.spritePositionToImagePosition(player.hand[0].pos.row, player.hand[0].pos.col);
+
+image.onload = function () {
+	context.drawImage(
+		image,
+		position.x,
+		position.y,
+		Cards.SPRITE_WIDTH,
+		Cards.SPRITE_HEIGHT,
+		0,
+		0,
+		Cards.SPRITE_WIDTH,
+		Cards.SPRITE_HEIGHT
+	);
+};
+
+console.log(player.getHandAsString());
+console.log(player.hand);
+
+//turning off the game for now
+// initGame();
