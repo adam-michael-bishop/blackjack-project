@@ -1,8 +1,8 @@
 "use strict";
 
 //For generating card sprite
-export const SPRITE_WIDTH = 33;
-export const SPRITE_HEIGHT = 45;
+export const SPRITE_WIDTH = 60;
+export const SPRITE_HEIGHT = 84;
 export const BORDER_WIDTH = 1;
 export const SPACING_WIDTH = 2;
 

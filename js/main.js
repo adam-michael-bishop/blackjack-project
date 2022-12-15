@@ -1,5 +1,8 @@
 "use strict";
 import * as Cards from "./cards.js";
+import * as Render from "./render.js";
+
+export {player, dealer};
 
 const handMethods = {
 	getHandTotal: function () {
@@ -50,13 +53,23 @@ const player = {
 	__proto__: handMethods
 };
 
-const dealer = {
-	hand: [],
-	score: 0,
-	turn: false,
-	standAt: 17,
-	__proto__: handMethods
+// const dealer = {
+// 	hand: [],
+// 	score: 0,
+// 	turn: false,
+// 	standAt: 17,
+// 	__proto__: handMethods
+// };
+
+class dealer {
+	constructor() {
+		this.hand = [];
+		this.score = 0;
+		this.standAt = 17;
+		this.getHandTotal = handMethods.getHandTotal;
+	}
 };
+const dlr = new dealer();
 
 const dealerStandAt = 17;
 let playingHand = false;
@@ -196,7 +209,7 @@ function playGame(){
 		}
 		if (playerGameMenuInput === "2") {
 			dealerTurn = true;
-			while (dealer.getHandTotal() < dealerStandAt) {
+			while (dealer.__proto__.getHandTotal() < dealerStandAt) {
 				alert(`${displayHands()}\n \nDealer Hits`);
 				deal(dealer);
 			}
@@ -219,30 +232,10 @@ function playGame(){
  */
 
 deal(player, 1)
-const canvas = document.querySelector('canvas');
-const context = canvas.getContext('2d');
-const spriteSheetURL = '../blackjack/assets/sprites/8BitDeckAssets.png';
-let image = new Image();
-image.src = spriteSheetURL;
 
-let position = Cards.spritePositionToImagePosition(player.hand[0].pos.row, player.hand[0].pos.col);
-
-image.onload = function () {
-	context.drawImage(
-		image,
-		position.x,
-		position.y,
-		Cards.SPRITE_WIDTH,
-		Cards.SPRITE_HEIGHT,
-		0,
-		0,
-		Cards.SPRITE_WIDTH,
-		Cards.SPRITE_HEIGHT
-	);
-};
-
-console.log(player.getHandAsString());
+console.log(player.__proto__.getHandAsString());
 console.log(player.hand);
+console.log(player);
 
 //turning off the game for now
 // initGame();
