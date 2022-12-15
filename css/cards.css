@@ -1,5 +1,7 @@
-#cards {
-    width: 300px;
-    height: 100px;
-    background: url("../assets/sprites/8BitDeckAssets.png");
+body {
+    background-color: #202224;
+}
+
+#canvas {
+    background: lightslategray;
 }
