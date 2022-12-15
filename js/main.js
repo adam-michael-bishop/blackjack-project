@@ -1,8 +1,8 @@
 "use strict";
+
 import * as Cards from "./cards.js";
 import * as Render from "./render.js";
 
-export {player, dealer};
 
 const handMethods = {
 	getHandTotal: function () {
@@ -53,23 +53,13 @@ const player = {
 	__proto__: handMethods
 };
 
-// const dealer = {
-// 	hand: [],
-// 	score: 0,
-// 	turn: false,
-// 	standAt: 17,
-// 	__proto__: handMethods
-// };
-
-class dealer {
-	constructor() {
-		this.hand = [];
-		this.score = 0;
-		this.standAt = 17;
-		this.getHandTotal = handMethods.getHandTotal;
-	}
+const dealer = {
+	hand: [],
+	score: 0,
+	turn: false,
+	standAt: 17,
+	__proto__: handMethods
 };
-const dlr = new dealer();
 
 const dealerStandAt = 17;
 let playingHand = false;
@@ -232,8 +222,9 @@ function playGame(){
  */
 
 deal(player, 1)
+Render.drawCardToContext(player, 0);
 
-console.log(player.__proto__.getHandAsString());
+console.log(player.getHandAsString());
 console.log(player.hand);
 console.log(player);
 
