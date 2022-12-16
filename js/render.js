@@ -1,8 +1,6 @@
 "use strict";
 
-import * as Cards from "./cards.js";
-
-export {getCardURL, drawHandToContext};
+export {getCardURL, drawHandToContext, displayMainMenu, createButton};
 
 const CARDS_IMAGE_PATH = '../blackjack/assets/sprites/cards';
 const canvas = document.querySelector('canvas');
@@ -32,4 +30,22 @@ function drawHandToContext(target) {
             );
         };
     }
+}
+
+function createButton(parent, id, label) {
+    const button = document.createElement("button");
+
+    if (id) {
+        button.setAttribute("id", id);
+    }
+    if (label) {
+        button.innerText = label;
+    }
+
+    parent.appendChild(button);
+}
+
+function displayMainMenu() {
+    createButton(document.body, "start", "Start Game");
+    createButton(document.body, "exit", "Exit Game");
 }

@@ -70,7 +70,7 @@ function initGame(){
 	if(playingHand){
 		playGame();
 	} else {
-		displayMainMenu();
+		Render.displayMainMenu();
 	}
 }
 
