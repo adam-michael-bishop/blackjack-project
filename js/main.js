@@ -78,7 +78,7 @@ function displayMainMenu(){
 	do {
 		let playerMenuInput = prompt("Enter 1 or start to play Blackjack, enter 2 or exit to exit game...");
 
-		if(playerMenuInput === "1"){
+		if(playerMenuInput === "1") {
 			playingHand = true;
 			playGame();
 			return;
