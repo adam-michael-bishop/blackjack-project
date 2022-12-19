@@ -74,22 +74,22 @@ function initGame(){
 	}
 }
 
-function displayMainMenu(){
-	do {
-		let playerMenuInput = prompt("Enter 1 or start to play Blackjack, enter 2 or exit to exit game...");
+// function displayMainMenu(){
+// 	do {
+// 		let playerMenuInput = prompt("Enter 1 or start to play Blackjack, enter 2 or exit to exit game...");
 
-		if(playerMenuInput === "1") {
-			playingHand = true;
-			playGame();
-			return;
-		} else if(playerMenuInput === "2" || playerMenuInput === null) {
-			let playerConfirmQuit = confirm("Are you sure you want to quit?");
-			if(playerConfirmQuit){
-				break;
-			}
-		}
-	} while (!playingHand);
-}
+// 		if(playerMenuInput === "1") {
+// 			playingHand = true;
+// 			playGame();
+// 			return;
+// 		} else if(playerMenuInput === "2" || playerMenuInput === null) {
+// 			let playerConfirmQuit = confirm("Are you sure you want to quit?");
+// 			if(playerConfirmQuit){
+// 				break;
+// 			}
+// 		}
+// 	} while (!playingHand);
+// }
 
 function playGame(){
 	resetScores();
