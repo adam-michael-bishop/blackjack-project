@@ -4,85 +4,101 @@ import * as Game from "./game.js";
 import * as Cards from "./cards.js";
 
 const CARDS_IMAGE_PATH = './assets/sprites/cards';
-const MAIN_GAME_WINDOW = document.getElementById('game-window');
+const MAIN_GAME_WINDOW_ID = 'game-window';
+const DEALER_WINDOW_ID = 'dealer-window';
+const PLAYER_WINDOW_ID = 'player-window';
+const BUTTON_WINDOW_ID = 'button-window';
 const PLAYER_HAND_WINDOW_ID = 'player-hand';
 const DEALER_HAND_WINDOW_ID = 'dealer-hand';
+const PLAYER_HAND_TOTAL_WINDOW_ID ='player-hand-total';
+const DEALER_HAND_TOTAL_WINDOW_ID ='dealer-hand-total';
+const MAIN_GAME_WINDOW = document.getElementById(MAIN_GAME_WINDOW_ID);
 const FACE_DOWN_CARD_PATH = './assets/sprites/cards/back_blue_basic.png'
 
 function getCardURL(rank, suit) {
     return `${CARDS_IMAGE_PATH}/${rank.toLowerCase()}_${suit.toLowerCase()}s_white.png`;
 }
 
-function createButton(parent, id, label) {
+function createButton(parentId, id, label, callbackFunction) {
     const button = document.createElement("button");
 
-    if (id) {
-        button.setAttribute("id", id);
-    }
-    if (label) {
-        button.innerText = label;
-    }
+    button.setAttribute("id", id); 
+    button.innerText = label;
+    document.getElementById(parentId).appendChild(button);
 
-    parent.appendChild(button);
+    document.querySelector(`#${id}`).addEventListener('click', callbackFunction);
+}
+
+function createWindow(parentId, id = false) {
+    let window = document.createElement('div');
+    if (id) {window.id = id};
+    return document.getElementById(parentId).appendChild(window);
 }
 
 function displayMainMenu() {
-    MAIN_GAME_WINDOW.replaceChildren();
-    let text = document.createElement('div');
-    text.innerText = 'Blackjack!!!';
-    MAIN_GAME_WINDOW.appendChild(text);
-    createButton(MAIN_GAME_WINDOW, "start", "Start Game");
-    createButton(MAIN_GAME_WINDOW, "exit", "Exit Game");
-    document.querySelector("#start").addEventListener('click', displayPlayerTurnMenu);
+    MAIN_GAME_WINDOW.replaceChildren(
+        createWindow(MAIN_GAME_WINDOW_ID, 'title'),
+        createWindow(MAIN_GAME_WINDOW_ID, BUTTON_WINDOW_ID)
+    );
+
+    document.getElementById('title').textContent = "Blackjack!!!";
+
+    createButton(BUTTON_WINDOW_ID, "start", "Start Game", displayPlayerTurnMenu);
+    createButton(BUTTON_WINDOW_ID, "exit", "Exit Game", exitGame);
 }
 
 function displayPlayerTurnMenu() {
-
-    let playerHandWindow = document.createElement('div');
-    let dealerHandWindow = document.createElement('div');
-
-    MAIN_GAME_WINDOW.replaceChildren();
     Game.startHand();
 
-    dealerHandWindow.id = DEALER_HAND_WINDOW_ID;
-    MAIN_GAME_WINDOW.appendChild(dealerHandWindow);
-    playerHandWindow.id = PLAYER_HAND_WINDOW_ID;
-    MAIN_GAME_WINDOW.appendChild(playerHandWindow);
+    MAIN_GAME_WINDOW.replaceChildren(
+        createWindow(MAIN_GAME_WINDOW_ID, DEALER_WINDOW_ID),
+        createWindow(MAIN_GAME_WINDOW_ID, PLAYER_WINDOW_ID),
+        createWindow(MAIN_GAME_WINDOW_ID, BUTTON_WINDOW_ID)
+    );
+    createWindow(DEALER_WINDOW_ID, DEALER_HAND_WINDOW_ID);
+    createWindow(PLAYER_WINDOW_ID, PLAYER_HAND_WINDOW_ID);
 
-    displayHand(Game.player, playerHandWindow);
+    createWindow(PLAYER_WINDOW_ID, PLAYER_HAND_TOTAL_WINDOW_ID).innerText = `Total: ${Game.player.getHandTotal()}`;
+    displayHand(Game.player, PLAYER_HAND_WINDOW_ID);
     displayDealerFaceUpCard();
 
-    createButton(MAIN_GAME_WINDOW, "hit", "Hit");
-    createButton(MAIN_GAME_WINDOW, "stand", "Stand");
-    createButton(MAIN_GAME_WINDOW, "quit", "Return to Main Menu");
+    createButton(BUTTON_WINDOW_ID, "hit", "Hit", hit);
+    createButton(BUTTON_WINDOW_ID, "stand", "Stand", stand);
+    createButton(BUTTON_WINDOW_ID, "quit", "Return to Main Menu", displayMainMenu);
+}
 
-    document.querySelector("#hit").addEventListener("click", hit);
-    document.querySelector("#stand").addEventListener("click", stand);
-    document.querySelector("#quit").addEventListener("click", displayMainMenu);
+function displayHandOverMenu() {
+    removeAllButtons();
+
+    createButton(BUTTON_WINDOW_ID, "play-again", "Play Again", displayPlayerTurnMenu);
+    createButton(BUTTON_WINDOW_ID, "quit", "Return to Main Menu", displayMainMenu);
 }
 
 function hit() {
     Game.deal(Game.player);
-    let playerHandWindow = document.getElementById(PLAYER_HAND_WINDOW_ID);
-    displayHand(Game.player, playerHandWindow);
+    document.getElementById(PLAYER_HAND_TOTAL_WINDOW_ID).innerText = `Total: ${Game.player.getHandTotal()}`;
+    displayHand(Game.player, PLAYER_HAND_WINDOW_ID);
     if (Game.player.getHandTotal() > Cards.blackjack) {
         console.log("you lose");
         displayHandOverMenu();
     }
-    console.log(Game.player.hand);
 }
 
 function stand() {
     //do stuff;
 }
 
-function displayHand(target, displayWindow) {
-    displayWindow.replaceChildren();
+function displayHand(target, parentId) {
+    document.getElementById(parentId).replaceChildren();
     for (const card of target.hand) {
         let myCard = document.createElement('img');
         myCard.src = getCardURL(card.rank.id, card.suit);
-        displayWindow.appendChild(myCard);
+        document.getElementById(parentId).appendChild(myCard);
     }
+}
+
+function getHandTotalString(target) {
+    
 }
 
 function displayDealerFaceUpCard() {
@@ -105,15 +121,9 @@ function removeAllButtons() {
     }
 }
 
-function displayHandOverMenu() {
-    removeAllButtons();
-
-    createButton(MAIN_GAME_WINDOW, "play-again", "Play Again");
-    createButton(MAIN_GAME_WINDOW, "quit", "Return to Main Menu");
-
-    document.querySelector("#play-again").addEventListener("click", displayPlayerTurnMenu);
-    document.querySelector("#quit").addEventListener("click", displayMainMenu);
+function exitGame() {
+    //do stuff
+    console.log("game over");
 }
-
 
 displayMainMenu();
