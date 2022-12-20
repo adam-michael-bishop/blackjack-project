@@ -96,7 +96,7 @@ export const aceConditionalValue = 1;
 export const aceDefaultValue = 11;
 
 //define the deck as an array
-export let deck = [];
+export const deck = [];
 
 //build the deck by iterating the assignSuit function for each element of the ranks array
 export function buildDeck(){

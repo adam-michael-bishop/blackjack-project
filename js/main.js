@@ -49,6 +49,7 @@ function displayMainMenu() {
 
 function displayPlayerTurnMenu() {
     Game.startHand();
+    console.log(Game.player.hand);
 
     MAIN_GAME_WINDOW.replaceChildren(
         createWindow(MAIN_GAME_WINDOW_ID, DEALER_WINDOW_ID),
@@ -58,10 +59,11 @@ function displayPlayerTurnMenu() {
     createWindow(DEALER_WINDOW_ID, DEALER_HAND_WINDOW_ID);
     createWindow(PLAYER_WINDOW_ID, PLAYER_HAND_WINDOW_ID);
 
-    createWindow(PLAYER_WINDOW_ID, PLAYER_HAND_TOTAL_WINDOW_ID).innerText = `Total: ${Game.player.getHandTotal()}`;
+    createWindow(PLAYER_WINDOW_ID, PLAYER_HAND_TOTAL_WINDOW_ID).innerText = getHandTotalString(Game.player);
     displayHand(Game.player, PLAYER_HAND_WINDOW_ID);
     displayDealerFaceUpCard();
-
+    console.log(Game.player.isHandSoft());
+    console.log(Game.player.hand);
     createButton(BUTTON_WINDOW_ID, "hit", "Hit", hit);
     createButton(BUTTON_WINDOW_ID, "stand", "Stand", stand);
     createButton(BUTTON_WINDOW_ID, "quit", "Return to Main Menu", displayMainMenu);
@@ -76,7 +78,7 @@ function displayHandOverMenu() {
 
 function hit() {
     Game.deal(Game.player);
-    document.getElementById(PLAYER_HAND_TOTAL_WINDOW_ID).innerText = `Total: ${Game.player.getHandTotal()}`;
+    document.getElementById(PLAYER_HAND_TOTAL_WINDOW_ID).innerText = getHandTotalString(Game.player);
     displayHand(Game.player, PLAYER_HAND_WINDOW_ID);
     if (Game.player.getHandTotal() > Cards.blackjack) {
         console.log("you lose");
@@ -98,7 +100,11 @@ function displayHand(target, parentId) {
 }
 
 function getHandTotalString(target) {
-    
+    let handTotalString = `Total: ${target.getHandTotal()}`;
+    if (target.isHandSoft()) {
+        handTotalString += ' (Soft)';
+    };
+    return handTotalString;
 }
 
 function displayDealerFaceUpCard() {

@@ -3,7 +3,7 @@
 import * as Cards from "./cards.js";
 // import * as Render from "./render.js";
 
-export {player, dealer, startHand, deal};
+export {player, dealer, startHand, deal, handMethods};
 
 const handMethods = {
 	getHandTotal: function () {
@@ -13,6 +13,12 @@ const handMethods = {
 		}
 		while (handTotal > Cards.blackjack && this.hand.some(e => e.rank.id === "ace" && e.rank.value !== Cards.aceConditionalValue)){
 			//find the index of an object that contains the property id === "ace" and has not already been set to 1
+			/**
+		 	* TODO:
+			* Fix this.
+		 	* When player is dealt a hand of 2 aces, getHandTotal will change both ace values to 1 but return a total of 12.
+			* Doesn't happen when manually setting a player's hand.
+			*/
 			let aceIndex = this.hand.findIndex(e => e.rank.id === "ace" && e.rank.value !== Cards.aceConditionalValue);
 			handTotal -= this.hand[aceIndex].rank.value;
 			handTotal += Cards.aceConditionalValue;
@@ -66,6 +72,7 @@ const dealerStandAt = 17;
 let playingHand = false;
 let dealerTurn = false;
 let deck = Cards.deck;
+console.dir(deck);
 
 // function initGame(){
 // 	if(playingHand){
@@ -96,7 +103,10 @@ function startHand() {
 	resetHands();
 	Cards.shuffle(deck);
 	dealerTurn = false;
-	deal(player, 2);
+	// testing
+	// deal(player, 2);
+	player.hand.push(deck.splice(deck.findIndex((e) => e.rank.id === 'ace'), 1)[0]);
+	player.hand.push(deck.splice(deck.findIndex((e) => e.rank.id === 'ace'), 1)[0]);
 	deal(dealer, 2);
 }
 
@@ -216,7 +226,7 @@ function deal(target, cardsToDeal = 1){
 }
 
 function resetHands(){
-	if (player.hand.length === 0 && dealer.hand.length === 0) {return;}
+	if (player.hand.length === 0 && dealer.hand.length === 0) {return};
 
 	player.resetAceValue();
 	dealer.resetAceValue();
@@ -236,5 +246,5 @@ function resetHands(){
 // console.log(player);
 
 Cards.buildDeck();
-Cards.shuffle(deck);
+// Cards.shuffle(deck);
 // initGame();
