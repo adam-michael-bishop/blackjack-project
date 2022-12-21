@@ -15,16 +15,27 @@ const handMethods = {
 				handTotal += card.rank.value;
 			}
 		}
+		if (handTotal > Cards.blackjack) {
+			return this.getLowestHandValue();
+		}
 		return handTotal;
 	},
-	isHandSoft: function () {
-		let totalHandValue = 0;
+	getLowestHandValue: function () {
+		let lowestHandValue = 0;
 		for (const card of this.hand) {
-			totalHandValue += card.rank.value;
+			if (card.rank.id === "ace") {
+				lowestHandValue += Cards.aceConditionalValue;
+			} else {
+				lowestHandValue += card.rank.value;
+			}
 		}
-		console.log(totalHandValue);
-		console.log(this.getHandTotal());
-		return this.getHandTotal() !== totalHandValue;
+		return lowestHandValue;
+	},
+	isHandSoft: function () {
+		if (this.hand.some((e) => e.rank.id === "ace")) {
+			return this.getLowestHandValue() < this.getHandTotal();
+		}
+		return false;
 	},
 	resetAceValue: function () {
 		for (const card of this.hand) {
@@ -100,10 +111,9 @@ function startHand() {
 	resetHands();
 	Cards.shuffle(deck);
 	dealerTurn = false;
-	// testing
-	// deal(player, 2);
-	player.hand.push(deck.splice(deck.findIndex((e) => e.rank.id === 'ace'), 1)[0]);
-	player.hand.push(deck.splice(deck.findIndex((e) => e.rank.id === 'ace'), 1)[0]);
+	deal(player, 2);
+	// player.hand.push(deck.splice(deck.findIndex((e) => e.rank.id === 'ace'), 1)[0]);
+	// deal(player);
 	deal(dealer, 2);
 }
 

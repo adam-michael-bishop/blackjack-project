@@ -57,16 +57,11 @@ function displayPlayerTurnMenu() {
     );
     createWindow(DEALER_WINDOW_ID, DEALER_HAND_WINDOW_ID);
     createWindow(PLAYER_WINDOW_ID, PLAYER_HAND_WINDOW_ID);
-    //hand good
-    console.log(JSON.stringify(Game.player.hand));
-	//bad stuff happen
     createWindow(PLAYER_WINDOW_ID, PLAYER_HAND_TOTAL_WINDOW_ID).innerText = getHandTotalString(Game.player);
-    //hand bad
-    console.log(JSON.stringify(Game.player.hand));
+
     displayHand(Game.player, PLAYER_HAND_WINDOW_ID);
     displayDealerFaceUpCard();
-    console.log(Game.player.isHandSoft());
-    console.log(Game.player.hand);
+
     createButton(BUTTON_WINDOW_ID, "hit", "Hit", hit);
     createButton(BUTTON_WINDOW_ID, "stand", "Stand", stand);
     createButton(BUTTON_WINDOW_ID, "quit", "Return to Main Menu", displayMainMenu);
@@ -91,6 +86,10 @@ function hit() {
 
 function stand() {
     //do stuff;
+	displayHand(Game.dealer, DEALER_HAND_WINDOW_ID);
+	createWindow(DEALER_WINDOW_ID, DEALER_HAND_TOTAL_WINDOW_ID);
+	document.getElementById(DEALER_HAND_TOTAL_WINDOW_ID).innerText = getHandTotalString(Game.dealer);
+	
 }
 
 function displayHand(target, parentId) {
