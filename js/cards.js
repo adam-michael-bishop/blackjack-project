@@ -10,85 +10,68 @@ const ranks = [
     {
         id: "2",
         value: 2,
-        colPos: 1,
     },
     {
         id: "3",
         value: 3,
-        colPos: 2,
     },
     {
         id: "4",
         value: 4,
-        colPos: 3,
     },
     {
         id: "5",
         value: 5,
-        colPos: 4,
     },
     {
         id: "6",
         value: 6,
-        colPos: 5,
     },
     {
         id: "7",
         value: 7,
-        colPos: 6,
     },
     {
         id: "8",
         value: 8,
-        colPos: 7,
     },
     {
         id: "9",
         value: 9,
-        colPos: 8,
     },
     {
         id: "10",
         value: 10,
-        colPos: 9,
     },
     {
         id: "jack",
         value: 10,
-        colPos: 10,
     },
     {
         id: "queen",
         value: 10,
-        colPos: 11,
     },
     {
         id: "king",
         value: 10,
-        colPos: 12,
     },
     {
         id: "ace",
         value: 11,
-        colPos: 13,
     },
 ];
 const suits = [
     {
         name: "club",
-        rowPos: 1,
     },
     {
         name: "spade",
-        rowPos: 3,
     },
     {
         name: "heart",
-        rowPos: 0,
     },
     {
         name: "diamond",
-        rowPos: 2,
     },
 ];
 export const blackjack = 21;
@@ -109,10 +92,6 @@ function assignSuit(cardRank){
         deck.push({
             rank: cardRank,
             suit: suits[i].name,
-            pos: {
-                col: cardRank.colPos,
-                row: suits[i].rowPos,
-            },
         });
     }
 }

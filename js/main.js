@@ -49,7 +49,6 @@ function displayMainMenu() {
 
 function displayPlayerTurnMenu() {
     Game.startHand();
-    console.log(Game.player.hand);
 
     MAIN_GAME_WINDOW.replaceChildren(
         createWindow(MAIN_GAME_WINDOW_ID, DEALER_WINDOW_ID),
@@ -58,8 +57,12 @@ function displayPlayerTurnMenu() {
     );
     createWindow(DEALER_WINDOW_ID, DEALER_HAND_WINDOW_ID);
     createWindow(PLAYER_WINDOW_ID, PLAYER_HAND_WINDOW_ID);
-
+    //hand good
+    console.log(JSON.stringify(Game.player.hand));
+	//bad stuff happen
     createWindow(PLAYER_WINDOW_ID, PLAYER_HAND_TOTAL_WINDOW_ID).innerText = getHandTotalString(Game.player);
+    //hand bad
+    console.log(JSON.stringify(Game.player.hand));
     displayHand(Game.player, PLAYER_HAND_WINDOW_ID);
     displayDealerFaceUpCard();
     console.log(Game.player.isHandSoft());

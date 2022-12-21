@@ -9,25 +9,22 @@ const handMethods = {
 	getHandTotal: function () {
 		let handTotal = 0;
 		for (const card of this.hand) {
-			handTotal += card.rank.value;
-		}
-		while (handTotal > Cards.blackjack && this.hand.some(e => e.rank.id === "ace" && e.rank.value !== Cards.aceConditionalValue)){
-			//find the index of an object that contains the property id === "ace" and has not already been set to 1
-			/**
-		 	* TODO:
-			* Fix this.
-		 	* When player is dealt a hand of 2 aces, getHandTotal will change both ace values to 1 but return a total of 12.
-			* Doesn't happen when manually setting a player's hand.
-			*/
-			let aceIndex = this.hand.findIndex(e => e.rank.id === "ace" && e.rank.value !== Cards.aceConditionalValue);
-			handTotal -= this.hand[aceIndex].rank.value;
-			handTotal += Cards.aceConditionalValue;
-			this.hand[aceIndex].rank.value = Cards.aceConditionalValue;
+			if ((handTotal + Cards.aceDefaultValue) > Cards.blackjack && card.rank.id === 'ace') {
+				handTotal += Cards.aceConditionalValue;
+			} else {
+				handTotal += card.rank.value;
+			}
 		}
 		return handTotal;
 	},
 	isHandSoft: function () {
-		return this.hand.some(e => e.rank.id === "ace" && e.rank.value === Cards.aceDefaultValue);
+		let totalHandValue = 0;
+		for (const card of this.hand) {
+			totalHandValue += card.rank.value;
+		}
+		console.log(totalHandValue);
+		console.log(this.getHandTotal());
+		return this.getHandTotal() !== totalHandValue;
 	},
 	resetAceValue: function () {
 		for (const card of this.hand) {
