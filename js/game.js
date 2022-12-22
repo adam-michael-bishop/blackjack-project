@@ -1,5 +1,11 @@
 "use strict";
 
+/**
+ * TODO:
+ * clean up unused code
+ * create a "highest win streak" stat to display on the main menu
+ */
+
 import * as Cards from "./cards.js";
 // import * as Render from "./render.js";
 
