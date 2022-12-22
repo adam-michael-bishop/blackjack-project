@@ -3,7 +3,7 @@
 import * as Cards from "./cards.js";
 // import * as Render from "./render.js";
 
-export {player, dealer, startHand, deal, handMethods, determineHandWinner, printScores};
+export {player, dealer, startHand, deal, handMethods, determineHandWinner, printScores, resetScores};
 
 const handMethods = {
 	getHandTotal: function () {

@@ -44,6 +44,7 @@ function displayMainMenu() {
         createWindow(MAIN_GAME_WINDOW_ID, 'title'),
         createWindow(MAIN_GAME_WINDOW_ID, BUTTON_WINDOW_ID)
     );
+    Game.resetScores();
 
     document.getElementById('title').textContent = "Blackjack!!!";
 
@@ -99,33 +100,34 @@ async function stand() {
     removeAllButtons();
     displayHand(Game.dealer, DEALER_HAND_WINDOW_ID);
 	createWindow(DEALER_WINDOW_ID, DEALER_HAND_TOTAL_WINDOW_ID);
-    dealerHit();
+    await dealerHit();
     displayHandOverMenu();
 }
 
 function shouldDealerHit() {
-    document.getElementById(MESSAGE_WINDOW_ID).innerText = 'Dealer Flips...';
+    document.getElementById(MESSAGE_WINDOW_ID).innerText = 'Dealer Flips';
     document.getElementById(DEALER_HAND_TOTAL_WINDOW_ID).innerText = getHandTotalString(Game.dealer);
-    return Game.dealer.getHandTotal() >= Game.dealer.standAt;
+    return Game.dealer.getHandTotal() < Game.dealer.standAt;
 }
 
 function dealerHit() {
     return new Promise((resolve) => {
+        if (!shouldDealerHit()) {
+            resolve();
+            return
+        }
         const id = setInterval(() => {
-            
             Game.deal(Game.dealer);
             displayHand(Game.dealer, DEALER_HAND_WINDOW_ID);
             document.getElementById(DEALER_HAND_TOTAL_WINDOW_ID).innerText = getHandTotalString(Game.dealer);
-            if (Game.dealer.getHandTotal() > Cards.blackjack) {
-                document.getElementById(MESSAGE_WINDOW_ID).innerText = 'Dealer Busts!';
+            if (Game.dealer.getHandTotal() > Cards.blackjack || Game.dealer.getHandTotal() >= Game.dealer.standAt) {
+                // document.getElementById(MESSAGE_WINDOW_ID).innerText = 'Dealer Busts!';
+                // document.getElementById(MESSAGE_WINDOW_ID).innerText = 'Dealer Stands';
+                // dealer busts or stands
                 clearInterval(id);
                 resolve();
-            } else if (Game.dealer.getHandTotal() < Game.dealer.standAt) {
-                document.getElementById(MESSAGE_WINDOW_ID).innerText = 'Dealer Hits again...';
             } else {
-                document.getElementById(MESSAGE_WINDOW_ID).innerText = 'Dealer Stands';
-                clearInterval(id);
-                resolve();
+                document.getElementById(MESSAGE_WINDOW_ID).innerText = 'Dealer Hits again...';
             }
         }, DELAY);
     });
