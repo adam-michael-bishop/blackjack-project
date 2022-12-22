@@ -3,7 +3,7 @@
 import * as Cards from "./cards.js";
 // import * as Render from "./render.js";
 
-export {player, dealer, startHand, deal, handMethods};
+export {player, dealer, startHand, deal, handMethods, determineHandWinner, printScores};
 
 const handMethods = {
 	getHandTotal: function () {
@@ -208,22 +208,23 @@ function checkForBlackjack(){
 }
 
 function determineHandWinner(){
-	dealerTurn = true;
+	let handOverString = '';
 	if (player.getHandTotal() === dealer.getHandTotal()){
-		alert(`${displayHands()}\n \nPush`);
+		handOverString = 'Push'
 		resetHands();
 		Cards.shuffle(deck);
 	} else if ((player.getHandTotal() > dealer.getHandTotal() && player.getHandTotal() <= Cards.blackjack) || dealer.getHandTotal() > Cards.blackjack){
 		player.score++;
-		alert(`${displayHands()}\n \nYou Win!`);
+		handOverString = 'You Win!'
 		resetHands();
 		Cards.shuffle(deck);
 	} else {
 		dealer.score++;
-		alert(`${displayHands()}\n \nYou Lose`);
+		handOverString = 'You Lose'
 		resetHands();
 		Cards.shuffle(deck);
 	}
+	return handOverString;
 }
 
 function deal(target, cardsToDeal = 1){

@@ -12,8 +12,12 @@ const PLAYER_HAND_WINDOW_ID = 'player-hand';
 const DEALER_HAND_WINDOW_ID = 'dealer-hand';
 const PLAYER_HAND_TOTAL_WINDOW_ID ='player-hand-total';
 const DEALER_HAND_TOTAL_WINDOW_ID ='dealer-hand-total';
+const MESSAGE_WINDOW_ID = 'message-window';
+const SCORE_WINDOW_ID = 'score-window';
 const MAIN_GAME_WINDOW = document.getElementById(MAIN_GAME_WINDOW_ID);
 const FACE_DOWN_CARD_PATH = './assets/sprites/cards/back_blue_basic.png'
+//Delay in ms
+const DELAY = 1000;
 
 function getCardURL(rank, suit) {
     return `${CARDS_IMAGE_PATH}/${rank.toLowerCase()}_${suit.toLowerCase()}s_white.png`;
@@ -51,7 +55,9 @@ function displayPlayerTurnMenu() {
     Game.startHand();
 
     MAIN_GAME_WINDOW.replaceChildren(
+        createWindow(MAIN_GAME_WINDOW_ID, SCORE_WINDOW_ID),
         createWindow(MAIN_GAME_WINDOW_ID, DEALER_WINDOW_ID),
+        createWindow(MAIN_GAME_WINDOW_ID, MESSAGE_WINDOW_ID),
         createWindow(MAIN_GAME_WINDOW_ID, PLAYER_WINDOW_ID),
         createWindow(MAIN_GAME_WINDOW_ID, BUTTON_WINDOW_ID)
     );
@@ -59,6 +65,7 @@ function displayPlayerTurnMenu() {
     createWindow(PLAYER_WINDOW_ID, PLAYER_HAND_WINDOW_ID);
     createWindow(PLAYER_WINDOW_ID, PLAYER_HAND_TOTAL_WINDOW_ID).innerText = getHandTotalString(Game.player);
 
+    document.getElementById(SCORE_WINDOW_ID).innerText = Game.printScores();
     displayHand(Game.player, PLAYER_HAND_WINDOW_ID);
     displayDealerFaceUpCard();
 
@@ -70,6 +77,7 @@ function displayPlayerTurnMenu() {
 function displayHandOverMenu() {
     removeAllButtons();
 
+    document.getElementById(MESSAGE_WINDOW_ID).innerText = Game.determineHandWinner();
     createButton(BUTTON_WINDOW_ID, "play-again", "Play Again", displayPlayerTurnMenu);
     createButton(BUTTON_WINDOW_ID, "quit", "Return to Main Menu", displayMainMenu);
 }
@@ -79,17 +87,48 @@ function hit() {
     document.getElementById(PLAYER_HAND_TOTAL_WINDOW_ID).innerText = getHandTotalString(Game.player);
     displayHand(Game.player, PLAYER_HAND_WINDOW_ID);
     if (Game.player.getHandTotal() > Cards.blackjack) {
-        console.log("you lose");
         displayHandOverMenu();
     }
 }
 
-function stand() {
-    //do stuff;
-	displayHand(Game.dealer, DEALER_HAND_WINDOW_ID);
+async function stand() {
+    /**
+     * TODO:
+     * If dealer's hand is 17 or higher, the dealer will stand and h
+     */
+    removeAllButtons();
+    displayHand(Game.dealer, DEALER_HAND_WINDOW_ID);
 	createWindow(DEALER_WINDOW_ID, DEALER_HAND_TOTAL_WINDOW_ID);
-	document.getElementById(DEALER_HAND_TOTAL_WINDOW_ID).innerText = getHandTotalString(Game.dealer);
-	
+    dealerHit();
+    displayHandOverMenu();
+}
+
+function shouldDealerHit() {
+    document.getElementById(MESSAGE_WINDOW_ID).innerText = 'Dealer Flips...';
+    document.getElementById(DEALER_HAND_TOTAL_WINDOW_ID).innerText = getHandTotalString(Game.dealer);
+    return Game.dealer.getHandTotal() >= Game.dealer.standAt;
+}
+
+function dealerHit() {
+    return new Promise((resolve) => {
+        const id = setInterval(() => {
+            
+            Game.deal(Game.dealer);
+            displayHand(Game.dealer, DEALER_HAND_WINDOW_ID);
+            document.getElementById(DEALER_HAND_TOTAL_WINDOW_ID).innerText = getHandTotalString(Game.dealer);
+            if (Game.dealer.getHandTotal() > Cards.blackjack) {
+                document.getElementById(MESSAGE_WINDOW_ID).innerText = 'Dealer Busts!';
+                clearInterval(id);
+                resolve();
+            } else if (Game.dealer.getHandTotal() < Game.dealer.standAt) {
+                document.getElementById(MESSAGE_WINDOW_ID).innerText = 'Dealer Hits again...';
+            } else {
+                document.getElementById(MESSAGE_WINDOW_ID).innerText = 'Dealer Stands';
+                clearInterval(id);
+                resolve();
+            }
+        }, DELAY);
+    });
 }
 
 function displayHand(target, parentId) {
