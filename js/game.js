@@ -82,99 +82,14 @@ const dealer = {
 	__proto__: handMethods
 };
 
-const dealerStandAt = 17;
-let playingHand = false;
-let dealerTurn = false;
 let deck = Cards.deck;
-console.dir(deck);
-
-// function initGame(){
-// 	if(playingHand){
-// 		playGame();
-// 	} else {
-// 		Render.displayMainMenu();
-// 	}
-// }
-
-// function displayMainMenu(){
-// 	do {
-// 		let playerMenuInput = prompt("Enter 1 or start to play Blackjack, enter 2 or exit to exit game...");
-
-// 		if(playerMenuInput === "1") {
-// 			playingHand = true;
-// 			playGame();
-// 			return;
-// 		} else if(playerMenuInput === "2" || playerMenuInput === null) {
-// 			let playerConfirmQuit = confirm("Are you sure you want to quit?");
-// 			if(playerConfirmQuit){
-// 				break;
-// 			}
-// 		}
-// 	} while (!playingHand);
-// }
 
 function startHand() {
 	resetHands();
 	Cards.shuffle(deck);
-	dealerTurn = false;
 	deal(player, 2);
 	// player.hand.push(deck.splice(deck.findIndex((e) => e.rank.id === 'ace'), 1)[0]);
-	// deal(player);
 	deal(dealer, 2);
-}
-
-function playGame(){
-	resetScores();
-	while (playingHand) {
-		resetHands();
-		Cards.shuffle(deck);
-		dealerTurn = false;
-		deal(player, 2);
-		deal(dealer, 2);
-
-		checkForBlackjack();
-		if(dealerTurn) {continue;}
-
-		let playerGameMenuInput = prompt(`${displayHands()}\n \nSelect 1: Hit | 2: Stand | 3: Main Menu`);
-
-		while (playerGameMenuInput !== "1" && playerGameMenuInput !== "2" && playerGameMenuInput !== "3" && playerGameMenuInput !== null){
-			playerGameMenuInput = prompt(`${displayHands()}\n \nSelect 1: Hit | 2: Stand | 3: Main Menu`);
-		}
-
-		if (playerGameMenuInput === "1") {
-			while (!dealerTurn){
-				deal(player);
-				if (player.getHandTotal() > Cards.blackjack){
-					determineHandWinner();
-					break;
-				}
-				do {
-					playerGameMenuInput = prompt(`${displayHands()}\n \nSelect 1: Hit | 2: Stand | 3: Main Menu`);
-					if (playerGameMenuInput === "2" || playerGameMenuInput === "3"){
-						dealerTurn = true;
-						break;
-					}
-				} while (playerGameMenuInput !== "1")
-			}
-		}
-		if (playerGameMenuInput === "2") {
-			dealerTurn = true;
-			while (dealer.getHandTotal() < dealerStandAt) {
-				alert(`${displayHands()}\n \nDealer Hits`);
-				deal(dealer);
-			}
-			determineHandWinner();
-			continue;
-		}
-		if (playerGameMenuInput === "3" || playerGameMenuInput === null) {
-			let playerConfirmQuit = confirm("Are you sure you want to return to Main Menu?");
-			if (playerConfirmQuit) {
-				playingHand = false;
-				displayMainMenu();
-				return;
-			}
-		}
-	}
 }
 
 function resetScores(){
@@ -186,24 +101,9 @@ function printScores(){
 	return `Player Score: ${player.score} Dealer Score: ${dealer.score}`;
 }
 
-function displayHands(){
-	// Render.drawHandToContext(player);
-	let playerHandString = '';
-	let dealerHandString = '';
-
-	if (dealerTurn){
-		dealerHandString = dealer.getHandAsString();
-	} else {
-		dealerHandString = `${dealer.hand[0].rank.id} of ${dealer.hand[0].suit}s`
-	}
-	playerHandString = player.getHandAsString();
-	//Following line is kind of messy, consider refactoring to make it readable.
-	return `${printScores()}\n \nDealer's hand: ${dealerHandString}\n${dealerTurn ? `Dealer Total: ${dealer.getHandTotal()} ${dealer.isHandSoft()? '(Soft)' : ''}\n` : ''}\nYour hand: ${playerHandString}\nYour total: ${player.getHandTotal()} ${player.isHandSoft()? '(Soft)' : ''}`
-}
-
 function checkForBlackjack(){
 	if (dealer.hand[0].rank.value >= 10){
-		alert(`${displayHands()}\n \nChecking for dealer Blackjack...`);
+		//do something
 	}
 	if (player.getHandTotal() === Cards.blackjack || dealer.getHandTotal() === Cards.blackjack){
 		if (player.getHandTotal() === Cards.blackjack){
@@ -247,17 +147,6 @@ function resetHands(){
 	player.returnHandToDeck(deck);
 	dealer.returnHandToDeck(deck);
 }
-
-/**
- * Testing out drawing a card and rendering on the screen
- */
-
-// deal(player, 5)
-// Render.drawHandToContext(player);
-//
-// console.log(player.getHandAsString());
-// console.log(player.hand);
-// console.log(player);
 
 Cards.buildDeck();
 // Cards.shuffle(deck);

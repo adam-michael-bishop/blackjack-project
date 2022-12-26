@@ -1,10 +1,13 @@
 "use strict";
 
-//For generating card sprite
-export const SPRITE_WIDTH = 60;
-export const SPRITE_HEIGHT = 84;
-export const BORDER_WIDTH = 1;
-export const SPACING_WIDTH = 2;
+export {buildDeck, getCardURL, shuffle, blackjack, aceConditionalValue, aceDefaultValue, deck, FACE_DOWN_CARD_PATH};
+
+const CARDS_IMAGE_PATH = './assets/sprites/cards';
+const FACE_DOWN_CARD_PATH = './assets/sprites/cards/back_blue_basic.png';
+const blackjack = 21;
+const aceConditionalValue = 1;
+const aceDefaultValue = 11;
+const deck = [];
 
 const ranks = [
     {
@@ -60,6 +63,7 @@ const ranks = [
         value: 11,
     },
 ];
+
 const suits = [
     {
         name: "club",
@@ -74,19 +78,11 @@ const suits = [
         name: "diamond",
     },
 ];
-export const blackjack = 21;
-export const aceConditionalValue = 1;
-export const aceDefaultValue = 11;
 
-//define the deck as an array
-export const deck = [];
-
-//build the deck by iterating the assignSuit function for each element of the ranks array
-export function buildDeck(){
+function buildDeck(){
     ranks.forEach(assignSuit)
 }
 
-//assigns each suit to a particular card rank and adds to the deck array. Called in the buildDeck function.
 function assignSuit(cardRank){
     for (let i = 0; i < suits.length; i++) {
         deck.push({
@@ -96,16 +92,13 @@ function assignSuit(cardRank){
     }
 }
 
-export function shuffle(arr){
+function shuffle(arr){
     for (let i = arr.length - 1; i > 0; i--){
         let j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
 }
 
-export function spritePositionToImagePosition(row, col) {
-    return {
-        x: (BORDER_WIDTH + col * (SPACING_WIDTH + SPRITE_WIDTH)),
-        y: (BORDER_WIDTH + row * (SPACING_WIDTH + SPRITE_HEIGHT)),
-    }
+function getCardURL(rank, suit) {
+    return `${CARDS_IMAGE_PATH}/${rank.toLowerCase()}_${suit.toLowerCase()}s_white.png`;
 }
