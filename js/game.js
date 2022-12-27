@@ -7,7 +7,6 @@
  */
 
 import * as Cards from "./cards.js";
-// import * as Render from "./render.js";
 
 export {player, dealer, startHand, deal, handMethods, determineHandWinner, printScores, resetScores};
 
@@ -38,6 +37,9 @@ const handMethods = {
 		return lowestHandValue;
 	},
 	isHandSoft: function () {
+		if (this.getHandTotal() === Cards.blackjack) {
+			return false;
+		}
 		if (this.hand.some((e) => e.rank.id === "ace")) {
 			return this.getLowestHandValue() < this.getHandTotal();
 		}
@@ -98,19 +100,7 @@ function resetScores(){
 }
 
 function printScores(){
-	return `Player Score: ${player.score} Dealer Score: ${dealer.score}`;
-}
-
-function checkForBlackjack(){
-	if (dealer.hand[0].rank.value >= 10){
-		//do something
-	}
-	if (player.getHandTotal() === Cards.blackjack || dealer.getHandTotal() === Cards.blackjack){
-		if (player.getHandTotal() === Cards.blackjack){
-			alert("Player Blackjack!");
-		}
-		determineHandWinner();
-	}
+	return `Player Score: ${player.score}\n\nDealer Score: ${dealer.score}`;
 }
 
 function determineHandWinner(){
@@ -149,5 +139,3 @@ function resetHands(){
 }
 
 Cards.buildDeck();
-// Cards.shuffle(deck);
-// initGame();

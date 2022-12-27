@@ -15,7 +15,7 @@ const messageWindowId = 'message-window';
 const scoreWindowId = 'score-window';
 const mainGameWindow = document.getElementById(mainGameWindowId);
 //Delay in ms
-const delay = 1000;
+const delay = 2000;
 
 function createButton(parentId, id, label, callbackFunction) {
     const button = document.createElement("button");
