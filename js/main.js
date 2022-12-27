@@ -15,7 +15,7 @@ const messageWindowId = 'message-window';
 const scoreWindowId = 'score-window';
 const mainGameWindow = document.getElementById(mainGameWindowId);
 //Delay in ms
-const delay = 2000;
+const delay = 1500;
 
 function createButton(parentId, id, label, callbackFunction) {
     const button = document.createElement("button");
@@ -46,7 +46,7 @@ function displayMainMenu() {
     createButton(buttonWindowId, "exit", "Exit Game", exitGame);
 }
 
-function displayPlayerTurnMenu() {
+async function displayPlayerTurnMenu() {
     Game.startHand();
 
     mainGameWindow.replaceChildren(
@@ -63,6 +63,7 @@ function displayPlayerTurnMenu() {
     document.getElementById(scoreWindowId).innerText = Game.printScores();
     displayHand(Game.player, playerHandWindowId);
     displayDealerFaceUpCard();
+    // await checkForBlackjack();
 
     createButton(buttonWindowId, "hit", "Hit", hit);
     createButton(buttonWindowId, "stand", "Stand", stand);
@@ -102,20 +103,26 @@ function shouldDealerHit() {
 
 function dealerHit() {
     return new Promise((resolve) => {
+        let loop = true;
         if (!shouldDealerHit()) {
             resolve();
             return
         }
         const id = setInterval(() => {
+            if (!loop) {
+                clearInterval(id);
+                resolve();
+                return
+            }
             Game.deal(Game.dealer);
             displayHand(Game.dealer, dealerHandWindowId);
             document.getElementById(dealerHandTotalWindowId).innerText = getHandTotalString(Game.dealer);
-            if (Game.dealer.getHandTotal() > Cards.blackjack || Game.dealer.getHandTotal() >= Game.dealer.standAt) {
-                // document.getElementById(MESSAGE_WINDOW_ID).innerText = 'Dealer Busts!';
-                // document.getElementById(MESSAGE_WINDOW_ID).innerText = 'Dealer Stands';
-                // dealer busts or stands
-                clearInterval(id);
-                resolve();
+            if (Game.dealer.getHandTotal() > Cards.blackjack) {
+                document.getElementById(messageWindowId).innerText = 'Dealer Busts!';
+                loop = false;
+            } else if (Game.dealer.getHandTotal() >= Game.dealer.standAt) {
+                document.getElementById(messageWindowId).innerText = 'Dealer Stands';
+                loop = false;
             } else {
                 document.getElementById(messageWindowId).innerText = 'Dealer Hits again...';
             }
@@ -150,6 +157,26 @@ function displayDealerFaceUpCard() {
 
     faceDownCard.src = Cards.FACE_DOWN_CARD_PATH;
     dealerHandWindow.appendChild(faceDownCard);
+}
+
+function checkForBlackjack() {
+    return new Promise((resovle) =>{
+        if (Game.dealer.hand[0].rank.value >= 10) {
+            document.getElementById(messageWindowId).innerText = 'Checking for dealer Blackjack...';
+            setTimeout(() => {
+                if (Game.dealer.getHandTotal() === Cards.blackjack) {
+                    resovle();
+                }
+                document.getElementById(messageWindowId).innerText = 'jk';
+            }, delay);
+        }
+        if (Game.player.getHandTotal() === Cards.blackjack) {
+            document.getElementById(messageWindowId).innerText = 'Blackjack!!!';
+            setTimeout(() =>{
+                resovle();
+            }, delay);
+        }
+    });
 }
 
 function removeAllButtons() {
