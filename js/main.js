@@ -66,7 +66,7 @@ function displayPlayerTurnMenu() {
 
     createButton(buttonWindowId, "hit", "Hit", hit);
     createButton(buttonWindowId, "stand", "Stand", stand);
-    createButton(buttonWindowId, "quit", "Return to Main Menu", displayMainMenu);
+    createButton(buttonWindowId, "quit", "Main Menu", displayMainMenu);
 }
 
 function displayHandOverMenu() {
@@ -74,7 +74,7 @@ function displayHandOverMenu() {
 
     document.getElementById(messageWindowId).innerText = Game.determineHandWinner();
     createButton(buttonWindowId, "play-again", "Play Again", displayPlayerTurnMenu);
-    createButton(buttonWindowId, "quit", "Return to Main Menu", displayMainMenu);
+    createButton(buttonWindowId, "quit", "Main Menu", displayMainMenu);
 }
 
 function hit() {
