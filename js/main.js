@@ -29,7 +29,7 @@ function createButton(parentId, id, label, callbackFunction) {
 
 function createWindow(parentId, id = false) {
     let window = document.createElement('div');
-    if (id) {window.id = id};
+    if (id) {window.id = id}
     return document.getElementById(parentId).appendChild(window);
 }
 
@@ -143,7 +143,7 @@ function getHandTotalString(target) {
     let handTotalString = `Total: ${target.getHandTotal()}`;
     if (target.isHandSoft()) {
         handTotalString += ' (Soft)';
-    };
+    }
     return handTotalString;
 }
 
@@ -160,12 +160,12 @@ function displayDealerFaceUpCard() {
 }
 
 function checkForBlackjack() {
-    return new Promise((resovle) =>{
+    return new Promise((resolve) =>{
         if (Game.dealer.hand[0].rank.value >= 10) {
             document.getElementById(messageWindowId).innerText = 'Checking for dealer Blackjack...';
             setTimeout(() => {
                 if (Game.dealer.getHandTotal() === Cards.blackjack) {
-                    resovle();
+                    resolve();
                 }
                 document.getElementById(messageWindowId).innerText = 'jk';
             }, delay);
@@ -173,7 +173,7 @@ function checkForBlackjack() {
         if (Game.player.getHandTotal() === Cards.blackjack) {
             document.getElementById(messageWindowId).innerText = 'Blackjack!!!';
             setTimeout(() =>{
-                resovle();
+                resolve();
             }, delay);
         }
     });
