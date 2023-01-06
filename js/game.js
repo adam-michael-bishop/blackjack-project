@@ -8,7 +8,7 @@
 
 import * as Cards from "./cards.js";
 
-export {player, dealer, startHand, deal, handMethods, determineHandWinner, printScores, resetScores};
+export {player, dealer, startHand, deal, determineHandWinner, printScores, resetScores};
 
 const handMethods = {
     getHandTotal: function () {
@@ -73,7 +73,6 @@ const handMethods = {
 const player = {
     hand: [],
     score: 0,
-    __proto__: handMethods
 };
 
 const dealer = {
@@ -81,10 +80,11 @@ const dealer = {
     score: 0,
     turn: false,
     standAt: 17,
-    __proto__: handMethods
 };
 
 let deck = Cards.deck;
+Object.assign(player, handMethods);
+Object.assign(dealer, handMethods);
 
 function startHand() {
     resetHands();
