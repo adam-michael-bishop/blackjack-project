@@ -13,23 +13,27 @@ const playerHandTotalWindowId ='player-hand-total';
 const dealerHandTotalWindowId ='dealer-hand-total';
 const messageWindowId = 'message-window';
 const scoreWindowId = 'score-window';
-const mainGameWindow = document.getElementById(mainGameWindowId);
-//Delay in ms
-const delay = 1500;
+const delay = 1500; //Delay in ms
+const mainGameWindow = document.body.appendChild(document.createElement('div'));
+
+mainGameWindow.id = mainGameWindowId;
+
 
 function createButton(parentId, id, label, callbackFunction) {
     const button = document.createElement("button");
 
-    button.setAttribute("id", id); 
+    button.setAttribute("id", id);
     button.innerText = label;
     document.getElementById(parentId).appendChild(button);
 
     document.querySelector(`#${id}`).addEventListener('click', callbackFunction);
 }
 
-function createWindow(parentId, id = false) {
+function createWindow(parentId, id = '') {
     let window = document.createElement('div');
-    if (id) {window.id = id}
+    if (id !== '') {
+        window.id = id;
+    }
     return document.getElementById(parentId).appendChild(window);
 }
 
