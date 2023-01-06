@@ -50,7 +50,7 @@ button:hover {
 
 #player-hand, #dealer-hand {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
 }
 
 #player-hand img, #dealer-hand img {
