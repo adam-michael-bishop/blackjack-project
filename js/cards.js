@@ -79,11 +79,11 @@ const suits = [
     },
 ];
 
-function buildDeck(){
+function buildDeck() {
     ranks.forEach(assignSuit)
 }
 
-function assignSuit(cardRank){
+function assignSuit(cardRank) {
     for (let i = 0; i < suits.length; i++) {
         deck.push({
             rank: cardRank,
@@ -92,8 +92,8 @@ function assignSuit(cardRank){
     }
 }
 
-function shuffle(arr){
-    for (let i = arr.length - 1; i > 0; i--){
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
